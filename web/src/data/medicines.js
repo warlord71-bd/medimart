@@ -18,4 +18,4 @@ export {
   medicines,
   categories,
   companies,
-} from '../../../../shared/data/medicines';
+} from '../../../shared/data/medicines';

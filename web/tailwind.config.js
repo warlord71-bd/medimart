@@ -27,6 +27,14 @@ module.exports = {
         sans: ['var(--font-inter)', 'system-ui', 'sans-serif'],
         display: ['var(--font-poppins)', 'system-ui', 'sans-serif'],
       },
+      fontWeight: {
+        '400': '400',
+        '500': '500',
+        '600': '600',
+        '700': '700',
+        '800': '800',
+        '900': '900',
+      },
       boxShadow: {
         card: '0 2px 12px rgba(0,0,0,0.06)',
         'card-hover': '0 8px 24px rgba(0,0,0,0.12)',
