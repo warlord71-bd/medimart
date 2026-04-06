@@ -1,0 +1,69 @@
+{
+  "name": "MediMart - Daily 9PM Sales Report → Telegram",
+  "nodes": [
+    {
+      "id": "c3d4e5f6-0003-0003-0003-000000000001",
+      "name": "Every Day 9PM",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [240, 300],
+      "parameters": {
+        "rule": {
+          "interval": [{ "field": "cronExpression", "expression": "0 21 * * *" }]
+        }
+      }
+    },
+    {
+      "id": "c3d4e5f6-0003-0003-0003-000000000002",
+      "name": "Get Today Orders",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [460, 300],
+      "parameters": {
+        "method": "GET",
+        "url": "=https://medimart.com.bd/wp-json/wc/v3/orders?consumer_key=ck_7160f02a4d41e1599ce72b911a8f0dff8d5b4c3d&consumer_secret=cs_c909b61a2dd8f27112cefde3b98e228b378ae3ca&after={{ new Date(new Date().setHours(0,0,0,0)).toISOString() }}&per_page=100&status=processing,completed",
+        "options": {}
+      }
+    },
+    {
+      "id": "c3d4e5f6-0003-0003-0003-000000000003",
+      "name": "Calculate Stats",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [680, 300],
+      "parameters": {
+        "jsCode": "const orders = $input.all();\nconst today = new Date().toLocaleDateString('en-BD', {timeZone:'Asia/Dhaka', day:'2-digit', month:'short', year:'numeric'});\n\nlet totalRevenue = 0;\nlet totalOrders = orders.length;\nlet completedOrders = 0;\nlet processingOrders = 0;\nconst productCount = {};\n\nfor (const item of orders) {\n  const order = item.json;\n  totalRevenue += parseFloat(order.total || 0);\n  if (order.status === 'completed') completedOrders++;\n  if (order.status === 'processing') processingOrders++;\n  for (const line of (order.line_items || [])) {\n    productCount[line.name] = (productCount[line.name] || 0) + line.quantity;\n  }\n}\n\nconst topProducts = Object.entries(productCount)\n  .sort((a,b) => b[1] - a[1])\n  .slice(0, 5)\n  .map(([name, qty]) => `  • ${name}: ${qty} pcs`)\n  .join('\\n');\n\nreturn [{\n  json: {\n    today,\n    totalOrders,\n    completedOrders,\n    processingOrders,\n    totalRevenue: totalRevenue.toFixed(2),\n    topProducts: topProducts || '  No sales today'\n  }\n}];"
+      }
+    },
+    {
+      "id": "c3d4e5f6-0003-0003-0003-000000000004",
+      "name": "Send Daily Report",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [900, 300],
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.telegram.org/bot8368208521:AAEh0nzqx4ydbx_tN4zcW8Zbq2g9ELCLOzQ/sendMessage",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            { "name": "chat_id", "value": "6639867372" },
+            {
+              "name": "text",
+              "value": "=📊 *MediMart Daily Report*\n📅 {{ $json.today }}\n━━━━━━━━━━━━━━━━━\n\n🛒 Total Orders: *{{ $json.totalOrders }}*\n✅ Completed: {{ $json.completedOrders }}\n⏳ Processing: {{ $json.processingOrders }}\n\n💰 Total Revenue: *৳{{ $json.totalRevenue }}*\n\n🏆 Top Products:\n{{ $json.topProducts }}\n━━━━━━━━━━━━━━━━━\n🔗 https://medimart.com.bd/wp-admin"
+            },
+            { "name": "parse_mode", "value": "Markdown" }
+          ]
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Every Day 9PM":    { "main": [[{ "node": "Get Today Orders",  "type": "main", "index": 0 }]] },
+    "Get Today Orders": { "main": [[{ "node": "Calculate Stats",   "type": "main", "index": 0 }]] },
+    "Calculate Stats":  { "main": [[{ "node": "Send Daily Report", "type": "main", "index": 0 }]] }
+  },
+  "active": true,
+  "settings": { "executionOrder": "v1" },
+  "meta": { "templateCredsSetupCompleted": true }
+}
