@@ -1,11 +1,14 @@
 {
-  "name": "MediMart - New Order → Telegram",
+  "name": "MediMart - New Order \u2192 Telegram",
   "nodes": [
     {
       "name": "Order Webhook",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
-      "position": [240, 300],
+      "position": [
+        240,
+        300
+      ],
       "webhookId": "medimart-order-webhook",
       "parameters": {
         "httpMethod": "POST",
@@ -18,19 +21,28 @@
       "name": "Send Order Alert",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4,
-      "position": [480, 300],
+      "position": [
+        480,
+        300
+      ],
       "parameters": {
         "method": "POST",
         "url": "https://api.telegram.org/bot8368208521:AAEh0nzqx4ydbx_tN4zcW8Zbq2g9ELCLOzQ/sendMessage",
         "sendBody": true,
         "bodyParameters": {
           "parameters": [
-            { "name": "chat_id", "value": "6639867372" },
+            {
+              "name": "chat_id",
+              "value": "6639867372"
+            },
             {
               "name": "text",
-              "value": "=🛒 *নতুন অর্ডার! New Order!*\n\n📦 Order ID: {{ $json.body.id || $json.id || 'N/A' }}\n👤 Customer: {{ $json.body.billing?.first_name || $json.billing?.first_name || 'N/A' }} {{ $json.body.billing?.last_name || $json.billing?.last_name || '' }}\n📱 Phone: {{ $json.body.billing?.phone || $json.billing?.phone || 'N/A' }}\n📍 Address: {{ $json.body.billing?.address_1 || $json.billing?.address_1 || 'N/A' }}, {{ $json.body.billing?.city || $json.billing?.city || '' }}\n\n💊 Items: {{ ($json.body.line_items || $json.line_items || []).map(i => i.name + ' x' + i.quantity).join(', ') || 'N/A' }}\n\n💰 Total: ৳{{ $json.body.total || $json.total || '0' }}\n💳 Payment: {{ $json.body.payment_method_title || $json.payment_method_title || 'N/A' }}\n\n⏰ Time: {{ new Date().toLocaleString('en-BD', {timeZone:'Asia/Dhaka'}) }}\n\n🔗 Admin: https://medimart.com.bd/wp-admin/post.php?post={{ $json.body.id || $json.id }}&action=edit"
+              "value": "=\ud83d\uded2 *\u09a8\u09a4\u09c1\u09a8 \u0985\u09b0\u09cd\u09a1\u09be\u09b0! New Order!*\n\n\ud83d\udce6 Order ID: {{ $json.body.id || $json.id || 'N/A' }}\n\ud83d\udc64 Customer: {{ $json.body.billing?.first_name || $json.billing?.first_name || 'N/A' }} {{ $json.body.billing?.last_name || $json.billing?.last_name || '' }}\n\ud83d\udcf1 Phone: {{ $json.body.billing?.phone || $json.billing?.phone || 'N/A' }}\n\ud83d\udccd Address: {{ $json.body.billing?.address_1 || $json.billing?.address_1 || 'N/A' }}, {{ $json.body.billing?.city || $json.billing?.city || '' }}\n\n\ud83d\udc8a Items: {{ ($json.body.line_items || $json.line_items || []).map(i => i.name + ' x' + i.quantity).join(', ') || 'N/A' }}\n\n\ud83d\udcb0 Total: \u09f3{{ $json.body.total || $json.total || '0' }}\n\ud83d\udcb3 Payment: {{ $json.body.payment_method_title || $json.payment_method_title || 'N/A' }}\n\n\u23f0 Time: {{ new Date().toLocaleString('en-BD', {timeZone:'Asia/Dhaka'}) }}\n\n\ud83d\udd17 Admin: https://medimart.com.bd/wp-admin/post.php?post={{ $json.body.id || $json.id }}&action=edit"
             },
-            { "name": "parse_mode", "value": "Markdown" }
+            {
+              "name": "parse_mode",
+              "value": "Markdown"
+            }
           ]
         }
       }
@@ -38,9 +50,18 @@
   ],
   "connections": {
     "Order Webhook": {
-      "main": [[{ "node": "Send Order Alert", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "Send Order Alert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
-  "settings": { "executionOrder": "v1" },
-  "meta": { "templateCredsSetupCompleted": true }
+  "settings": {
+    "executionOrder": "v1"
+  }
 }
