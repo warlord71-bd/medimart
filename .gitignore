@@ -1,1 +1,4 @@
 extracted/
+src/config/api.js
+web/.env.local
+web/.env
