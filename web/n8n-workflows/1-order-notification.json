@@ -2,7 +2,6 @@
   "name": "MediMart - New Order → Telegram",
   "nodes": [
     {
-      "id": "a1b2c3d4-0001-0001-0001-000000000001",
       "name": "Order Webhook",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
@@ -16,7 +15,6 @@
       }
     },
     {
-      "id": "a1b2c3d4-0001-0001-0001-000000000002",
       "name": "Send Order Alert",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4,
