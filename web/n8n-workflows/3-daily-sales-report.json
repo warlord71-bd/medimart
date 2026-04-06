@@ -59,7 +59,6 @@
     "Get Today Orders": { "main": [[{ "node": "Calculate Stats",   "type": "main", "index": 0 }]] },
     "Calculate Stats":  { "main": [[{ "node": "Send Daily Report", "type": "main", "index": 0 }]] }
   },
-  "active": true,
   "settings": { "executionOrder": "v1" },
   "meta": { "templateCredsSetupCompleted": true }
 }
